@@ -25,11 +25,12 @@ const dataCatalog = [
 ];
 
 function DataCatalog() {
-  const [openSchema, setOpenSchema] = useState(null);
+  const [openSchema, setOpenSchema] = useState<string | null>(null);
 
-  const handleSchemaClick = (schema) => {
-    setOpenSchema(openSchema === schema ? null : schema);
+  const handleSchemaClick = (schema: string) => {
+    setOpenSchema((openSchema: string | null) => (openSchema === schema ? null : schema));
   };
+
 
   return (
     <nav className="space-y-2 text-sm">
