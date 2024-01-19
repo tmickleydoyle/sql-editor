@@ -26,7 +26,7 @@ const Playground = ({ code: defaultCode }: PlaygroundProps ) => {
             minimap: {
               enabled: false
             },
-            contextmenu: false
+            contextmenu: false,
           }}
           onChange={handleOnChange}
         />
