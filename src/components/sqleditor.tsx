@@ -60,17 +60,16 @@ function DataCatalog() {
 
 function SqlEditor() {
 
-    const [code, setCode] = useState(`
+    const [code, setCode] = useState<string>(`
     SELECT * FROM users`
     );
 
-    const handleCodeChange = (e) => {
-      console.log(e.target.textContent)
-      setCode(e.target.textContent);
+    const handleCodeChange = (e: React.ChangeEvent<HTMLDivElement>) => {
+      setCode(e.target.textContent || "");
     };
 
   return (
-    <div className="grid h-screen grid-cols-[85%_15%]">
+    <div className="grid h-screen grid-cols-[75%_25%]">
       <div className="grid grid-rows-[50%_50%] gap-4 p-4">
         <Card className="flex flex-col">
           <CardHeader>
