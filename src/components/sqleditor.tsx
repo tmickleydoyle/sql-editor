@@ -152,7 +152,7 @@ function SqlEditor() {
 }
 
 interface Props {
-  // define the props interface here
+  className?: string;
 }
 
 function LineChart(props: Props) {
