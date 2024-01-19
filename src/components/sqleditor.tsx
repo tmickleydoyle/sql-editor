@@ -9,6 +9,8 @@ import { ResponsiveLine } from "@nivo/line"
 import Link from "next/link"
 import React, { useState } from "react";
 
+import Playground from "./editor";
+
 const dataCatalog = [
   {
     schema: "Users",
@@ -78,11 +80,7 @@ function SqlEditor() {
             <Input className="mb-2" placeholder="Describe what the query is doing" />
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <div className="border rounded-lg p-2" contentEditable={true} onChange={handleCodeChange}>
-              <pre className="text-sm font-mono text-gray-900 dark:text-gray-50 code-container">
-                  <code>{code}</code>
-              </pre>
-            </div>
+            <Playground code={code} />
             <div className="flex justify-between gap-4">
               <div className="flex gap-4">
                 <Button>Submit</Button>
