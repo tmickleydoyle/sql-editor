@@ -38,6 +38,31 @@ body {
   overflow: auto;
   white-space: nowrap;
   font-family: monospace;
-  border: 1px solid #ccc;
+  border: 1px solid #0000;
   padding: 10px;
+  border: 1px solid #0000001a; /* Light grey border */
+  border-radius: 8px; /* Rounded corners */
+  padding: 10px; /* Add padding to the sides */
+  background-color: #0000; /* Light background color */
+}
+
+.code-container .monaco-editor {
+  background-color: #0000;
+  box-shadow: 0 0 10px #0000;
+}
+
+.table-container {
+  max-height: min(100vh, 500px);
+  overflow-y: auto;
+
+}
+
+.repo-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #0000; /* Optional: Set a background color for the footer */
+  padding: 10px; /* Optional: Add padding for better appearance */
+  text-align: center;
 }

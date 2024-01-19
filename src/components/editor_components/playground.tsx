@@ -3,12 +3,8 @@
 import { useState } from 'react';
 import Editor from '@monaco-editor/react';
 
-interface PlaygroundProps {
-  code: string;
-}
-
-const Playground = ({ code: defaultCode }: PlaygroundProps ) => {
-  const [code, setCode] = useState(defaultCode);
+const Playground = () => {
+  const [code, setCode] = useState(`SELECT * FROM devices LIMIT 10;`);
   function handleOnChange(value?: string) {
     console.log('value', value)
     setCode(value || '');

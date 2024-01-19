@@ -4,83 +4,48 @@ import { Input } from "@/components/ui/input"
 import { CardHeader, CardContent, Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { TabsTrigger, TabsList, TabsContent, Tabs } from "@/components/ui/tabs"
-import { TableHead, TableRow, TableHeader, TableCell, TableBody, Table } from "@/components/ui/table"
-import { ResponsiveLine } from "@nivo/line"
-import Link from "next/link"
-import React, { useState } from "react";
 
-import Playground from "./editor";
-
-const dataCatalog = [
-  {
-    schema: "Users",
-    tables: ["UsersTable1", "UsersTable2", "UsersTable3", "UsersTable4"],
-  },
-  {
-    schema: "Orders",
-    tables: ["OrdersTable1", "OrdersTable2", "OrdersTable3"],
-  },
-  {
-    schema: "Products",
-    tables: ["ProductsTable1", "ProductsTable2"],
-  },
-];
-
-function DataCatalog() {
-  const [openSchema, setOpenSchema] = useState<string | null>(null);
-
-  const handleSchemaClick = (schema: string) => {
-    setOpenSchema((openSchema: string | null) => (openSchema === schema ? null : schema));
-  };
-
-  return (
-    <nav className="space-y-2 text-sm">
-      {dataCatalog.map((schema) => (
-        <div key={schema.schema} className="space-y-1">
-          <a
-            className="block font-semibold cursor-pointer font-mono text-gray-900 dark:text-gray-50"
-            onClick={() => handleSchemaClick(schema.schema)}
-          >
-            {schema.schema}
-          </a>
-          {openSchema === schema.schema && (
-            <div className="ml-4">
-              {schema.tables.map((table) => (
-                <div key={table}>
-                  <Link href="#">
-                    <div className="block font-mono text-gray-900 dark:text-gray-50">{table}</div>
-                  </Link>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      ))}
-    </nav>
-  );
-}
+import Playground from "./editor_components/playground";
+import DataCatalog from "./editor_components/catalog";
+import DataTable from "./editor_components/table";
+import HiddenFooter from "./editor_components/hidden_footer";
+import LineChart from "./editor_components/linechart";
 
 function SqlEditor() {
 
-    const [code, setCode] = useState<string>(`
-    SELECT * FROM users`
-    );
-
-    const handleCodeChange = (e: React.ChangeEvent<HTMLDivElement>) => {
-      setCode(e.target.textContent || "");
-    };
+  const data = [
+    { id: 1, device_type: 'Desktop', month: 'Jan', count: 43},
+    { id: 2, device_type: 'Desktop', month: 'Feb', count: 137},
+    { id: 3, device_type: 'Desktop', month: 'Mar', count: 61},
+    { id: 4, device_type: 'Desktop', month: 'Apr', count: 145},
+    { id: 5, device_type: 'Desktop', month: 'May', count: 26},
+    { id: 6, device_type: 'Desktop', month: 'Jun', count: 154},
+    { id: 7, device_type: 'Tablet', month: 'Jan', count: 16},
+    { id: 8, device_type: 'Tablet', month: 'Feb', count: 34},
+    { id: 9, device_type: 'Tablet', month: 'Mar', count: 28},
+    { id: 10, device_type: 'Tablet', month: 'Apr', count: 87},
+    { id: 11, device_type: 'Tablet', month: 'May', count: 66},
+    { id: 12, device_type: 'Tablet', month: 'Jun', count: 104},
+    { id: 13, device_type: 'Mobile', month: 'Jan', count: 60},
+    { id: 14, device_type: 'Mobile', month: 'Feb', count: 48},
+    { id: 15, device_type: 'Mobile', month: 'Mar', count: 177},
+    { id: 16, device_type: 'Mobile', month: 'Apr', count: 78},
+    { id: 17, device_type: 'Mobile', month: 'May', count: 96},
+    { id: 18, device_type: 'Mobile', month: 'Jun', count: 204},
+  ];
 
   return (
     <>
     <div className="grid h-screen grid-cols-[75%_25%]">
       <div className="grid grid-rows-[50%_50%] gap-4 p-4">
-        <Card className="flex flex-col">
+        <Card className="border-none">
+          <Card className="flex flex-col border-none">
           <CardHeader>
             <Input className="mb-2" placeholder="Enter Query Title" />
             <Input className="mb-2" placeholder="Describe what the query is doing" />
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Playground code={code} />
+            <Playground />
             <div className="flex justify-between gap-4">
               <div className="flex gap-4">
                 <Button>Submit</Button>
@@ -93,149 +58,42 @@ function SqlEditor() {
               </div>
             </div>
           </CardContent>
-        </Card>
+          </Card>
         <Tabs defaultValue="table">
-          <TabsList className="gap-4">
-            <TabsTrigger value="table">Table</TabsTrigger>
-            <TabsTrigger value="chart">Chart</TabsTrigger>
-          </TabsList>
           <TabsContent value="table">
-            <Card className="flex flex-col">
+            <Card className="flex flex-col border-none">
+            <TabsList className="gap-4">
+              <TabsTrigger value="table">Table</TabsTrigger>
+              <TabsTrigger value="chart">Chart</TabsTrigger>
+            </TabsList>
               <CardContent>
                 <br />
-                <div className="flex justify-end mb-4">
-                  <Button variant="outline">Download Data</Button>
-                </div>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>ID</TableHead>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell>1</TableCell>
-                      <TableCell>John Doe</TableCell>
-                      <TableCell>john@example.com</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>2</TableCell>
-                      <TableCell>Jane Doe</TableCell>
-                      <TableCell>jane@example.com</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
+                <DataTable data={data}/>
               </CardContent>
             </Card>
           </TabsContent>
           <TabsContent value="chart">
-            <Card className="flex flex-col">
+            <Card className="flex flex-col border-none">
+            <TabsList className="gap-4">
+              <TabsTrigger value="table">Table</TabsTrigger>
+              <TabsTrigger value="chart">Chart</TabsTrigger>
+            </TabsList>
               <CardContent>
                 <br />
-                <div className="flex justify-end mb-4">
-                  <Button variant="outline">Download Chart</Button>
-                </div>
-                <LineChart className="aspect-[10/2]" />
+                <LineChart tabledata={data}/>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
+        </Card>
       </div>
       <div className="border-l p-4 ">
         <h2 className="font-semibold mb-4">Data Catalog</h2>
         <DataCatalog />
       </div>
     </div>
-    <div className="flex items-center justify-center text-center space-y-4">
-        <a
-            className="text-lg text-[#919191] hover:text-[#bd1e59]"
-            href="http://github.com/tmickleydoyle/sql-editor"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-            GitHub Repo
-        </a>
-    </div>
+    <HiddenFooter />
     </>
-  )
-}
-
-interface Props {
-  className?: string;
-}
-
-function LineChart(props: Props) {
-  return (
-    <div {...props}>
-      <ResponsiveLine
-        data={[
-          {
-            id: "Desktop",
-            data: [
-              { x: "Jan", y: 43 },
-              { x: "Feb", y: 137 },
-              { x: "Mar", y: 61 },
-              { x: "Apr", y: 145 },
-              { x: "May", y: 26 },
-              { x: "Jun", y: 154 },
-            ],
-          },
-          {
-            id: "Mobile",
-            data: [
-              { x: "Jan", y: 60 },
-              { x: "Feb", y: 48 },
-              { x: "Mar", y: 177 },
-              { x: "Apr", y: 78 },
-              { x: "May", y: 96 },
-              { x: "Jun", y: 204 },
-            ],
-          },
-        ]}
-        margin={{ top: 10, right: 10, bottom: 40, left: 40 }}
-        xScale={{
-          type: "point",
-        }}
-        yScale={{
-          type: "linear",
-        }}
-        axisTop={null}
-        axisRight={null}
-        axisBottom={{
-          tickSize: 0,
-          tickPadding: 16,
-        }}
-        axisLeft={{
-          tickSize: 0,
-          tickValues: 5,
-          tickPadding: 16,
-        }}
-        colors={["#2563eb", "#e11d48"]}
-        pointSize={6}
-        useMesh={true}
-        gridYValues={6}
-        theme={{
-          tooltip: {
-            chip: {
-              borderRadius: "9999px",
-            },
-            container: {
-              fontSize: "12px",
-              textTransform: "capitalize",
-              borderRadius: "6px",
-            },
-          },
-          grid: {
-            line: {
-              stroke: "#f3f4f6",
-            },
-          },
-        }}
-        role="application"
-      />
-    </div>
   )
 }
 
