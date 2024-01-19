@@ -69,6 +69,7 @@ function SqlEditor() {
     };
 
   return (
+    <>
     <div className="grid h-screen grid-cols-[75%_25%]">
       <div className="grid grid-rows-[50%_50%] gap-4 p-4">
         <Card className="flex flex-col">
@@ -77,7 +78,7 @@ function SqlEditor() {
             <Input className="mb-2" placeholder="Describe what the query is doing" />
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <div className="border rounded-lg p-2 bg-[#f6f8fa] dark:bg-gray-800" contentEditable={true} onChange={handleCodeChange}>
+            <div className="border rounded-lg p-2" contentEditable={true} onChange={handleCodeChange}>
               <pre className="text-sm font-mono text-gray-900 dark:text-gray-50 code-container">
                   <code>{code}</code>
               </pre>
@@ -149,6 +150,17 @@ function SqlEditor() {
         <DataCatalog />
       </div>
     </div>
+    <div className="flex items-center justify-center text-center space-y-4">
+        <a
+            className="text-lg text-[#919191] hover:text-[#bd1e59]"
+            href="http://github.com/tmickleydoyle/sql-editor"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            GitHub Repo
+        </a>
+    </div>
+    </>
   )
 }
 
