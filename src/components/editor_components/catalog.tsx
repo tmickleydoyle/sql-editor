@@ -1,4 +1,3 @@
-import Link from "next/link";
 import React, { useState } from "react";
 
 function DataCatalog() {
@@ -80,6 +79,7 @@ function DataCatalog() {
   };
 
   return (
+    <>
     <nav className="space-y-2 text-sm">
       {dataCatalog.map((schema) => (
         <div key={schema.schema} className="space-y-1">
@@ -120,6 +120,7 @@ function DataCatalog() {
         </div>
       ))}
     </nav>
+    </>
   );
 }
 

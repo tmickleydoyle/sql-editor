@@ -3,7 +3,11 @@
 import { Input } from "@/components/ui/input"
 import { CardHeader, CardContent, Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 import { TabsTrigger, TabsList, TabsContent, Tabs } from "@/components/ui/tabs"
+
+import React, { useState } from "react";
 
 import Playground from "./editor_components/playground";
 import DataCatalog from "./editor_components/catalog";
@@ -33,11 +37,21 @@ function SqlEditor() {
     { id: 17, device_type: 'Mobile', month: 'May', count: 96},
     { id: 18, device_type: 'Mobile', month: 'Jun', count: 204},
   ];
+  
+  const [isDivVisible, setIsDivVisible] = useState(true);
+
+  const toggleVisibility = () => {
+    setIsDivVisible((prev) => !prev);
+  };
 
   return (
     <>
-    <div className="grid h-screen grid-cols-[75%_25%]">
-      <div className="grid grid-rows-[50%_50%] gap-4 p-4">
+    <div className="flex items-left justify-end space-x-2 pt-2 pr-2">
+      <Label htmlFor="catalog-mode" className="pt-2">Data Catalog</Label>
+      <Switch id="catalog-mode" onClick={toggleVisibility}/>
+    </div>
+    <div className={`grid ${!isDivVisible ? 'grid-cols-[75%_25%]' : 'grid-cols-[100%_0%]'}`}>
+      <div className="grid-rows-[50%_50%] gap-4 p-4">
         <Card className="border-none">
           <Card className="flex flex-col border-none">
           <CardHeader>
@@ -87,10 +101,12 @@ function SqlEditor() {
         </Tabs>
         </Card>
       </div>
-      <div className="border-l p-4 ">
-        <h2 className="font-semibold mb-4">Data Catalog</h2>
-        <DataCatalog />
+      {!isDivVisible && (
+      <div className="resize flex flex-col border-none">
+          <h2 className="font-semibold mb-4">Data Catalog</h2>
+          <DataCatalog />
       </div>
+      )}
     </div>
     <HiddenFooter />
     </>
