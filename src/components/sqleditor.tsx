@@ -31,7 +31,6 @@ function DataCatalog() {
     setOpenSchema((openSchema: string | null) => (openSchema === schema ? null : schema));
   };
 
-
   return (
     <nav className="space-y-2 text-sm">
       {dataCatalog.map((schema) => (
@@ -60,6 +59,16 @@ function DataCatalog() {
 }
 
 function SqlEditor() {
+
+    const [code, setCode] = useState(`
+    SELECT * FROM users`
+    );
+
+    const handleCodeChange = (e) => {
+      console.log(e.target.textContent)
+      setCode(e.target.textContent);
+    };
+
   return (
     <div className="grid h-screen grid-cols-[85%_15%]">
       <div className="grid grid-rows-[50%_50%] gap-4 p-4">
@@ -69,15 +78,9 @@ function SqlEditor() {
             <Input className="mb-2" placeholder="Describe what the query is doing" />
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <div className="border rounded-lg p-2 bg-[#f6f8fa] dark:bg-gray-800">
-              <pre className="text-sm font-mono text-gray-900 dark:text-gray-50">
-                <div className="code-container">
-                <code>
-                  SELECT * FROM users;<br />
-                  SELECT * FROM orders;<br />
-                  SELECT * FROM products;<br />
-                </code>
-                </div>
+            <div className="border rounded-lg p-2 bg-[#f6f8fa] dark:bg-gray-800" contentEditable={true} onChange={handleCodeChange}>
+              <pre className="text-sm font-mono text-gray-900 dark:text-gray-50 code-container">
+                  <code>{code}</code>
               </pre>
             </div>
             <div className="flex justify-between gap-4">
@@ -149,7 +152,11 @@ function SqlEditor() {
   )
 }
 
-function LineChart(props) {
+interface Props {
+  // define the props interface here
+}
+
+function LineChart(props: Props) {
   return (
     <div {...props}>
       <ResponsiveLine
