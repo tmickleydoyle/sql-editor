@@ -111,7 +111,6 @@ function SqlEditor() {
       </div>
       {!isDivVisible && (
       <div className="resize flex flex-col border-none">
-          <h2 className="font-semibold mb-4">Data Catalog</h2>
           <DataCatalog />
       </div>
       )}
