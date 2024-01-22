@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { TabsTrigger, TabsList, TabsContent, Tabs } from "@/components/ui/tabs"
 
-import React, { useState } from "react";
+import React, { use, useState, useEffect } from "react";
 
 import Playground from "./editor_components/playground";
 import DataCatalog from "./editor_components/catalog";
@@ -16,28 +16,26 @@ import HiddenFooter from "./editor_components/hidden_footer";
 import LineChart from "./editor_components/linechart";
 
 function SqlEditor() {
+  const [data, setData] = useState<{ id: number; device_type: string; month: string; count: number }[] | null>(null);
+  const [code, setCode] = useState(`SELECT * FROM devices.device_usage LIMIT 10;`);
+  function handleOnChange(value?: string) {
+    setCode(value || '');
+  }
 
-  const data = [
-    { id: 1, device_type: 'Desktop', month: 'Jan', count: 43},
-    { id: 2, device_type: 'Desktop', month: 'Feb', count: 137},
-    { id: 3, device_type: 'Desktop', month: 'Mar', count: 61},
-    { id: 4, device_type: 'Desktop', month: 'Apr', count: 145},
-    { id: 5, device_type: 'Desktop', month: 'May', count: 26},
-    { id: 6, device_type: 'Desktop', month: 'Jun', count: 154},
-    { id: 7, device_type: 'Tablet', month: 'Jan', count: 16},
-    { id: 8, device_type: 'Tablet', month: 'Feb', count: 34},
-    { id: 9, device_type: 'Tablet', month: 'Mar', count: 28},
-    { id: 10, device_type: 'Tablet', month: 'Apr', count: 87},
-    { id: 11, device_type: 'Tablet', month: 'May', count: 66},
-    { id: 12, device_type: 'Tablet', month: 'Jun', count: 104},
-    { id: 13, device_type: 'Mobile', month: 'Jan', count: 60},
-    { id: 14, device_type: 'Mobile', month: 'Feb', count: 48},
-    { id: 15, device_type: 'Mobile', month: 'Mar', count: 177},
-    { id: 16, device_type: 'Mobile', month: 'Apr', count: 78},
-    { id: 17, device_type: 'Mobile', month: 'May', count: 96},
-    { id: 18, device_type: 'Mobile', month: 'Jun', count: 204},
-  ];
-  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/data');
+        const result = await response.json();
+        setData(result);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const [isDivVisible, setIsDivVisible] = useState(true);
 
   const toggleVisibility = () => {
@@ -59,7 +57,7 @@ function SqlEditor() {
             <Input className="mb-2" placeholder="Describe what the query is doing" />
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <Playground />
+            <Playground code={code} onChange={handleOnChange}/>
             <div className="flex justify-between gap-4">
               <div className="flex gap-4">
                 <Button>Submit</Button>
@@ -94,7 +92,7 @@ function SqlEditor() {
             </TabsList>
               <CardContent>
                 <br />
-                <LineChart tabledata={data}/>
+                <LineChart tabledata={data} />
               </CardContent>
             </Card>
           </TabsContent>

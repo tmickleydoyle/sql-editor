@@ -52,7 +52,7 @@ body {
 }
 
 .table-container {
-  max-height: min(100vh, 500px);
+  max-height: min(90vh, 500px);
   overflow-y: auto;
 
 }
@@ -63,6 +63,7 @@ body {
   left: 0;
   width: 100%;
   background-color: #0000; /* Optional: Set a background color for the footer */
-  padding: 10px; /* Optional: Add padding for better appearance */
-  text-align: center;
+  padding: 5px; /* Optional: Add padding for better appearance */
+  padding-right: 10px;
+  text-align: right;
 }
