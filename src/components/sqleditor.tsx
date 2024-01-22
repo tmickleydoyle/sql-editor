@@ -80,7 +80,7 @@ function SqlEditor() {
             </TabsList>
               <CardContent>
                 <br />
-                <DataTable data={data}/>
+                <DataTable data={data || undefined}/>
               </CardContent>
             </Card>
           </TabsContent>
@@ -92,7 +92,7 @@ function SqlEditor() {
             </TabsList>
               <CardContent>
                 <br />
-                <LineChart tabledata={data} />
+                <LineChart tabledata={data || undefined} />
               </CardContent>
             </Card>
           </TabsContent>
