@@ -29,7 +29,7 @@ const transformDataForChart = (tableData: Props["tabledata"], xColumn: string, y
 
     console.log('seriesColumn', seriesColumn)
 
-    if (seriesColumn === '' || seriesColumn === null) {
+    if (seriesColumn === '' || seriesColumn === 'None') {
       const overallSeries = acc.find((series: { id: string; data: { x: string; y: number }[] }) => series.id === "Overall");
 
       if (overallSeries) {
@@ -64,7 +64,7 @@ const transformDataForChart = (tableData: Props["tabledata"], xColumn: string, y
 function LineChart(props: Props) {
   const [xColumn, setXColumn] = useState('');
   const [yColumn, setYColumn] = useState('');
-  const [seriesColumn, setSeriesColumn] = useState('');
+  const [seriesColumn, setSeriesColumn] = useState('None');
   const [chartData, setChartData] = useState<{ id: string; data: { x: string; y: number }[] }[]>([]);
 
   useEffect(() => {
@@ -176,7 +176,7 @@ function LineChart(props: Props) {
                   <SelectValue placeholder={null} />
                 </SelectTrigger>
                 <SelectContent position="popper">
-                  <SelectItem key={uuid()} value={null}>{null}</SelectItem>
+                  <SelectItem key={uuid()} value={'None'}>{'None'}</SelectItem>
                   {getColumnOptions()}
                 </SelectContent>
               </Select>
