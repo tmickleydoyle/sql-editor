@@ -15,8 +15,18 @@ import DataTable from "./editor_components/table";
 import HiddenFooter from "./editor_components/hidden_footer";
 import LineChart from "./editor_components/linechart";
 
+interface DataItem {
+  [key: string]: any;
+}
+
+interface SqlEditorProps {
+  // Make data prop more flexible by allowing null or undefined
+  data?: DataItem[] | null | undefined;
+}
+
 function SqlEditor() {
-  const [data, setData] = useState<{ id: number; device_type: string; month: string; count: number }[] | null>(null);
+  // const [data, setData] = useState<{ id: number; device_type: string; month: string; count: number }[] | null>(null);
+  const [data, setData] = useState<DataItem[] | null>(null);
   const [code, setCode] = useState(`SELECT * FROM devices.device_usage LIMIT 10;`);
   function handleOnChange(value?: string) {
     setCode(value || '');

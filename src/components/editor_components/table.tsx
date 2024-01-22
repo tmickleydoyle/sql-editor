@@ -1,11 +1,15 @@
 import { TableHead, TableRow, TableHeader, TableCell, TableBody, Table } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
-interface Props<T extends { id: string }> { // Add generic constraint for 'id' property
-  data?: T[];
+interface Props {
+  data?: TableDataEntry[];
 }
 
-function DataTable<T extends { id: string }>(props: Props<T>) { // Add generic constraint for 'id' property
+type TableDataEntry = {
+  [key: string]: any;
+};
+
+function DataTable(props: Props) {
   return (
     <>
       <div className="flex justify-end mb-4" {...props}>
