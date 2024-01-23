@@ -33,34 +33,48 @@ function SqlEditor() {
   }
 
   const fetchData = async () => {
-    try {
-      const response = await fetch('/api/data');
-      if (response.status !== 200) {
-        throw new Error('Error fetching data');
-      }
+    const maxRetries = 5;
 
-      const data = response.body;
+    for (let retry = 0; retry <= maxRetries; retry++) {
+      try {
+        const response = await fetch('/api/data');
+        if (response.status !== 200) {
+          throw new Error('Error fetching data');
+        }
+
+        const data = response.body;
         if (!data) {
           return;
-      }
-      
-      const reader = data.getReader();
-      const decoder = new TextDecoder();
-      let done = false;
-      let accumulatedValue = [];
-
-      while (!done) {
-        const { value, done: readerDone } = await reader.read();
-        done = readerDone;
-        if (value) {
-          const decodedChunk = decoder.decode(value);
-          accumulatedValue.push(JSON.parse(decodedChunk));
         }
-      }      
-      reader.releaseLock();
-      setData(accumulatedValue[0]);
-    } catch (error) {
-      console.error('Error fetching data:', error);
+
+        const reader = data.getReader();
+        const decoder = new TextDecoder();
+        let done = false;
+        let accumulatedString = '';
+
+        while (!done) {
+          const { value, done: readerDone } = await reader.read();
+          done = readerDone;
+          if (value) {
+            const decodedChunk = decoder.decode(value);
+            accumulatedString += decodedChunk;
+          }
+        }
+
+        if (done) {
+          console.log('Stream complete');
+          setData(JSON.parse(accumulatedString));
+          reader.releaseLock();
+        }
+        // Break out of the retry loop if data is successfully fetched
+        break;
+      } catch (error) {
+        console.error(`Error fetching data (retry ${retry + 1}/${maxRetries + 1}):`, error);
+
+        if (retry === maxRetries) {
+          console.error('Exceeded maximum retries.');
+        }
+      }
     }
   };
 

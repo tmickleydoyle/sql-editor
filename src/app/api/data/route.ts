@@ -7,12 +7,12 @@ interface Data {
 function generateMockData(): Data[] {
   const data: Data[] = [];
 
-  for (let year = 2000; year <= 2023; year++) {
+  for (let year = 1000; year <= 9999; year++) {
     for (let month = 1; month <= 12; month++) {
       const monthString = month < 10 ? `0${month}` : `${month}`;
-      data.push({ id: uuidv4(), device_type: 'Desktop', month: `${year}-${monthString}-01`, count: getRandomCount() });
-      data.push({ id: uuidv4(), device_type: 'Tablet', month: `${year}-${monthString}-01`, count: getRandomCount() });
-      data.push({ id: uuidv4(), device_type: 'Mobile', month: `${year}-${monthString}-01`, count: getRandomCount() });
+      data.push({ id: uuidv4().toString(), device_type: 'Desktop'.toString(), month: `${year}-${monthString}-01`.toString(), count: getRandomCount() });
+      data.push({ id: uuidv4().toString(), device_type: 'Tablet'.toString(), month: `${year}-${monthString}-01`.toString(), count: getRandomCount() });
+      data.push({ id: uuidv4().toString(), device_type: 'Mobile'.toString(), month: `${year}-${monthString}-01`.toString(), count: getRandomCount() });
     }
   }
 
@@ -20,7 +20,7 @@ function generateMockData(): Data[] {
 }
 
 function getRandomCount(): number {
-  return Math.floor(Math.random() * 10000) + 1000; // Random count between 1000 and 11000
+  return Math.floor(Math.random() * 100) + Math.floor(Math.random() * 100);
 }
 
 export async function GET(req: Request) {
