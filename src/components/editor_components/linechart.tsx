@@ -27,8 +27,6 @@ const transformDataForChart = (tableData: Props["tabledata"], xColumn: string, y
 
     const newDataPoint = { x: entry[xColumn], y: entry[yColumn] };
 
-    console.log('seriesColumn', seriesColumn)
-
     if (seriesColumn === '' || seriesColumn === 'None') {
       const overallSeries = acc.find((series: { id: string; data: { x: string; y: number }[] }) => series.id === "Overall");
 
