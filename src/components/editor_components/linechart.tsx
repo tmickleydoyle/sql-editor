@@ -64,6 +64,7 @@ function LineChart(props: Props) {
   const [yColumn, setYColumn] = useState('');
   const [seriesColumn, setSeriesColumn] = useState('None');
   const [chartData, setChartData] = useState<{ id: string; data: { x: string; y: number }[] }[]>([]);
+  const [tickSize, setTickSize] = useState(5);
 
   useEffect(() => {
     const data = transformDataForChart(props.tabledata, xColumn, yColumn, seriesColumn);
@@ -117,10 +118,12 @@ function LineChart(props: Props) {
               axisBottom={{
                   tickSize: 5,
                   tickPadding: 5,
-                  tickRotation: 0,
-                    legend: xColumn.toString(),
+                  tickRotation: -25,
+                  // legend: xColumn.toString(),
                   legendOffset: 36,
-                  legendPosition: 'middle'
+                  legendPosition: 'middle',
+                  // Only show every 10 ticks if there are more than 20 ticks
+                  tickValues: chartData.length > 0 && chartData[0].data.length > 20 ? chartData[0].data.filter((_, index) => index % 10 === 0).map((data) => data.x) : undefined,
               }}
               axisLeft={{
                   tickSize: 5,
