@@ -32,24 +32,24 @@ function SqlEditor() {
     setCode(value || '');
   }
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('/api/data');
-        const result = await response.json();
-        setData(result);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const fetchData = async () => {
+    try {
+      const response = await fetch('/api/data');
+      const result = await response.json();
+      setData(result);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
   const [isDivVisible, setIsDivVisible] = useState(true);
 
   const toggleVisibility = () => {
     setIsDivVisible((prev) => !prev);
+  };
+
+  const handleSubmit = () => {
+    fetchData();
   };
 
   return (
@@ -70,7 +70,7 @@ function SqlEditor() {
             <Playground code={code} onChange={handleOnChange}/>
             <div className="flex justify-between gap-4">
               <div className="flex gap-4">
-                <Button>Submit</Button>
+                <Button onClick={handleSubmit}>Submit</Button>
                 <Button variant="outline">Cancel</Button>
               </div>
               <div className="flex gap-4">
