@@ -27,7 +27,7 @@ interface SqlEditorProps {
 function SqlEditor() {
   // const [data, setData] = useState<{ id: number; device_type: string; month: string; count: number }[] | null>(null);
   const [data, setData] = useState<DataItem[] | null>(null);
-  const [code, setCode] = useState(`SELECT * FROM devices.device_usage LIMIT 10;`);
+  const [code, setCode] = useState(`SELECT * FROM devices.device_usage LIMIT 10000;`);
   function handleOnChange(value?: string) {
     setCode(value || '');
   }
@@ -75,6 +75,10 @@ function SqlEditor() {
     fetchData();
   };
 
+  const handleCancel = () => {
+    setData('');
+  }
+
 
   return (
     <>
@@ -95,7 +99,7 @@ function SqlEditor() {
             <div className="flex justify-between gap-4">
               <div className="flex gap-4">
                 <Button onClick={handleSubmit}>Submit</Button>
-                <Button variant="outline">Cancel</Button>
+                <Button onClick={handleCancel} variant="outline">Cancel</Button>
               </div>
               <div className="flex gap-4">
                 <Button variant="outline">Save</Button>
