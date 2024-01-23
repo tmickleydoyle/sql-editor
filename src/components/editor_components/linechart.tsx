@@ -119,17 +119,14 @@ function LineChart(props: Props) {
                   tickSize: 5,
                   tickPadding: 5,
                   tickRotation: -25,
-                  // legend: xColumn.toString(),
                   legendOffset: 36,
                   legendPosition: 'middle',
-                  // Only show every 10 ticks if there are more than 20 ticks
                   tickValues: chartData.length > 0 && chartData[0].data.length > 20 ? chartData[0].data.filter((_, index) => index % 10 === 0).map((data) => data.x) : undefined,
               }}
               axisLeft={{
                   tickSize: 5,
                   tickPadding: 5,
                   tickRotation: 0,
-                  legend: yColumn.toString(),
                   legendOffset: -40,
                   legendPosition: 'middle'
               }}

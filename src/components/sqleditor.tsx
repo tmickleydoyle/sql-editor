@@ -16,12 +16,12 @@ import HiddenFooter from "./editor_components/hidden_footer";
 import LineChart from "./editor_components/linechart";
 
 interface DataItem {
-  [key: string]: any;
+  [key: string]: any | any;
 }
 
 interface SqlEditorProps {
   // Make data prop more flexible by allowing null or undefined
-  data?: DataItem[] | null | undefined;
+  data?: DataItem[] | any;
 }
 
 function SqlEditor() {
@@ -35,8 +35,30 @@ function SqlEditor() {
   const fetchData = async () => {
     try {
       const response = await fetch('/api/data');
-      const result = await response.json();
-      setData(result);
+      if (response.status !== 200) {
+        throw new Error('Error fetching data');
+      }
+
+      const data = response.body;
+        if (!data) {
+          return;
+      }
+      
+      const reader = data.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+      let accumulatedValue = [];
+
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        done = readerDone;
+        if (value) {
+          const decodedChunk = decoder.decode(value);
+          accumulatedValue.push(JSON.parse(decodedChunk));
+        }
+      }      
+      reader.releaseLock();
+      setData(accumulatedValue[0]);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -49,8 +71,10 @@ function SqlEditor() {
   };
 
   const handleSubmit = () => {
+    setData(null); // Clear previous data when submitting a new query
     fetchData();
   };
+
 
   return (
     <>
@@ -90,7 +114,7 @@ function SqlEditor() {
             </TabsList>
               <CardContent>
                 <br />
-                <DataTable data={data || undefined}/>
+                <DataTable data={data?.slice(0, 10000) || undefined} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -102,7 +126,7 @@ function SqlEditor() {
             </TabsList>
               <CardContent>
                 <br />
-                <LineChart tabledata={data || undefined} />
+                <LineChart tabledata={data?.slice(0, 10000) || undefined} />
               </CardContent>
             </Card>
           </TabsContent>
