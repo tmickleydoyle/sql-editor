@@ -70,11 +70,26 @@ function LineChart(props: Props) {
     setChartData(data as { id: string; data: { x: string; y: number }[] }[]);
   }, [props.tabledata, xColumn, yColumn, seriesColumn]);
 
-  const getColumnOptions = () => {
+  const getStringColumnOptions = () => {
     const columns = props.tabledata ? Object.keys(props.tabledata[0] || {}) : [];
-    return columns.map((column) => (
+    const numericColumns = columns.filter((column) => {
+      return props.tabledata?.some((row) => isNaN(row[column]));
+    });
+
+    return numericColumns.map((column) => (
       <SelectItem key={uuid()} value={column}>{column}</SelectItem>
-    ))
+    ));
+  };
+
+  const getNumberColumnOptions = () => {
+    const columns = props.tabledata ? Object.keys(props.tabledata[0] || {}) : [];
+    const numericColumns = columns.filter((column) => {
+      return props.tabledata?.some((row) => !isNaN(row[column]));
+    });
+
+    return numericColumns.map((column) => (
+      <SelectItem key={uuid()} value={column}>{column}</SelectItem>
+    ));
   };
 
   return (
@@ -91,7 +106,7 @@ function LineChart(props: Props) {
               xScale={{ type: 'point' }}
               yScale={{
                   type: 'linear',
-                  min: 'auto',
+                  min: 0,
                   max: 'auto',
                   stacked: false,
                   reverse: false
@@ -156,7 +171,7 @@ function LineChart(props: Props) {
                   <SelectValue placeholder={null}/>
                 </SelectTrigger>
                 <SelectContent position="popper">
-                  {getColumnOptions()}
+                  {getStringColumnOptions()}
                 </SelectContent>
               </Select>
               <Label htmlFor="framework">y-axis</Label>
@@ -165,7 +180,7 @@ function LineChart(props: Props) {
                   <SelectValue placeholder={null} />
                 </SelectTrigger>
                 <SelectContent position="popper">
-                  {getColumnOptions()}
+                  {getNumberColumnOptions()}
                 </SelectContent>
               </Select>
               <Label htmlFor="framework">series</Label>
@@ -175,7 +190,7 @@ function LineChart(props: Props) {
                 </SelectTrigger>
                 <SelectContent position="popper">
                   <SelectItem key={uuid()} value={'None'}>{'None'}</SelectItem>
-                  {getColumnOptions()}
+                  {getStringColumnOptions()}
                 </SelectContent>
               </Select>
             </div>
