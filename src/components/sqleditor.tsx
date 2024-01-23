@@ -76,7 +76,7 @@ function SqlEditor() {
   };
 
   const handleCancel = () => {
-    setData();
+    setData(null);
   }
 
 
