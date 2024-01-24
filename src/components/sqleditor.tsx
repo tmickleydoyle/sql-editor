@@ -143,7 +143,7 @@ function SqlEditor() {
             </TabsList>
               <CardContent>
                 <br />
-                <DataTable data={data?.slice(0, 1000) || undefined}/>
+                <DataTable data={data?.slice(0, 10000) || undefined}/>
               </CardContent>
             </Card>
           </TabsContent>
@@ -155,8 +155,13 @@ function SqlEditor() {
             </TabsList>
               <CardContent>
                 <br />
-                { data && (
-                  <LineChart tabledata={data?.slice(0, 1000) || undefined}/>
+                {data && data.length < 10000 && (
+                  <LineChart tabledata={data?.slice(0, 5000) || undefined}/>
+                )}
+                {data && data.length >= 10000 && (
+                  <div className="flex flex-col gap-4">
+                  <Badge variant="secondary">Too many rows for visualizations. Reduce the data to 5,000 rows or less.</Badge>
+                  </div>
                 )}
               </CardContent>
             </Card>

@@ -10,7 +10,7 @@ function generateMockData(): Data[] {
   let tabletTotal = 0;
   let mobileTotal = 0;
 
-  for (let year = 1000; year <= 6024; year++) {
+  for (let year = 1983; year <= 2024; year++) {
     for (let month = 1; month <= 12; month++) {
       const monthString = month < 10 ? `0${month}` : `${month}`;
 
