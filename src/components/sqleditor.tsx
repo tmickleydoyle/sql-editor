@@ -10,11 +10,11 @@ import { Badge } from "@/components/ui/badge"
 
 import React, { use, useState, useEffect } from "react";
 
-import Playground from "./editor_components/playground";
-import DataCatalog from "./editor_components/catalog";
-import DataTable from "./editor_components/table";
-import HiddenFooter from "./editor_components/hidden_footer";
-import LineChart from "./editor_components/linechart";
+import Playground from "./sqleditor_components/playground";
+import DataCatalog from "./sqleditor_components/catalog";
+import DataTable from "./sqleditor_components/table";
+import HiddenFooter from "./sqleditor_components/hidden_footer";
+import LineChart from "./sqleditor_components/linechart";
 
 interface DataItem {
   [key: string]: any | any;
@@ -27,6 +27,7 @@ interface SqlEditorProps {
 function SqlEditor() {
   const [data, setData] = useState<DataItem[] | null>(null);
   const [code, setCode] = useState(`SELECT * FROM devices.device_usage LIMIT 10000;`);
+  const [hitRowMax, setHitRowMax] = useState(false);
   function handleOnChange(value?: string) {
     setCode(value || '');
   }
@@ -62,14 +63,15 @@ function SqlEditor() {
 
         if (done) {
           console.log('Stream complete');
-          const lastIndex = accumulatedString.lastIndexOf("},{");
-          if (lastIndex !== -1 && !accumulatedString.endsWith("}]")) {
-            accumulatedString = accumulatedString.substring(0, lastIndex) + "}]";
+          if (!accumulatedString.endsWith("}]")) {
+            const lastIndex = accumulatedString.lastIndexOf("},{");
+            if (lastIndex !== -1 && !accumulatedString.endsWith("}]")) {
+              accumulatedString = accumulatedString.substring(0, lastIndex) + "}]";
+            }
           }
           setData(JSON.parse(accumulatedString));
           reader.releaseLock();
         }
-        // Break out of the retry loop if data is successfully fetched
         break;
       } catch (error) {
         console.error(`Error fetching data (retry ${retry + 1}/${maxRetries + 1}):`, error);
@@ -79,9 +81,11 @@ function SqlEditor() {
         }
       }
     }
+    console.log(data?.length);
+    if (data && data.length >= 10000) {
+      setHitRowMax(true);
+    }
   };
-
-  console.log(data?.length);
 
   const [isDivVisible, setIsDivVisible] = useState(true);
 
@@ -97,7 +101,6 @@ function SqlEditor() {
   const handleCancel = () => {
     setData(null);
   }
-
 
   return (
     <>
@@ -119,8 +122,8 @@ function SqlEditor() {
               <div className="flex gap-4">
                 <Button onClick={handleSubmit}>Submit</Button>
                 <Button onClick={handleCancel} variant="destructive">Cancel</Button>
-                {data && (
-                  <Badge variant="secondary">Row Count: {data.length.toLocaleString()}</Badge>
+                {hitRowMax && (
+                  <Badge variant="secondary">Only showing first 10,000 rows</Badge>
                 )}
               </div>
               <div className="flex gap-4">
@@ -140,7 +143,7 @@ function SqlEditor() {
             </TabsList>
               <CardContent>
                 <br />
-                <DataTable data={data || undefined}/>
+                <DataTable data={data?.slice(0, 1000) || undefined}/>
               </CardContent>
             </Card>
           </TabsContent>
@@ -153,7 +156,7 @@ function SqlEditor() {
               <CardContent>
                 <br />
                 { data && (
-                  <LineChart tabledata={data || undefined} />
+                  <LineChart tabledata={data?.slice(0, 1000) || undefined}/>
                 )}
               </CardContent>
             </Card>
