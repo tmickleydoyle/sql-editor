@@ -6,13 +6,23 @@ interface Data {
 
 function generateMockData(): Data[] {
   const data: Data[] = [];
+  let desktopTotal = 0;
+  let tabletTotal = 0;
+  let mobileTotal = 0;
 
-  for (let year = 2010; year <=2024; year++) {
+  for (let year = 2010; year <= 2024; year++) {
     for (let month = 1; month <= 12; month++) {
       const monthString = month < 10 ? `0${month}` : `${month}`;
-      data.push({ id: uuidv4().toString(), device_type: 'Desktop'.toString(), month: `${year}-${monthString}-01`.toString(), count: getRandomCount() });
-      data.push({ id: uuidv4().toString(), device_type: 'Tablet'.toString(), month: `${year}-${monthString}-01`.toString(), count: getRandomCount() });
-      data.push({ id: uuidv4().toString(), device_type: 'Mobile'.toString(), month: `${year}-${monthString}-01`.toString(), count: getRandomCount() });
+
+      // Update cumulative count for each device type
+      desktopTotal += getRandomCount() * 2;
+      tabletTotal += getRandomCount() * 1;
+      mobileTotal += getRandomCount() * 3;
+
+      // Push data with cumulative count
+      data.push({ id: uuidv4().toString(), device_type: 'Desktop'.toString(), month: `${year}-${monthString}-01`.toString(), count: desktopTotal });
+      data.push({ id: uuidv4().toString(), device_type: 'Tablet'.toString(), month: `${year}-${monthString}-01`.toString(), count: tabletTotal });
+      data.push({ id: uuidv4().toString(), device_type: 'Mobile'.toString(), month: `${year}-${monthString}-01`.toString(), count: mobileTotal });
     }
   }
 
@@ -20,7 +30,7 @@ function generateMockData(): Data[] {
 }
 
 function getRandomCount(): number {
-  return Math.floor(Math.random() * 100) + Math.floor(Math.random() * 100);
+  return Math.floor(Math.random() * 100) + Math.floor(Math.random() * 10);
 }
 
 export async function GET(req: Request) {

@@ -21,12 +21,10 @@ interface DataItem {
 }
 
 interface SqlEditorProps {
-  // Make data prop more flexible by allowing null or undefined
   data?: DataItem[] | any;
 }
 
 function SqlEditor() {
-  // const [data, setData] = useState<{ id: number; device_type: string; month: string; count: number }[] | null>(null);
   const [data, setData] = useState<DataItem[] | null>(null);
   const [code, setCode] = useState(`SELECT * FROM devices.device_usage LIMIT 10000;`);
   function handleOnChange(value?: string) {
