@@ -7,7 +7,7 @@ interface Data {
 function generateMockData(): Data[] {
   const data: Data[] = [];
 
-  for (let year = 1000; year <=5000; year++) {
+  for (let year = 2010; year <=2024; year++) {
     for (let month = 1; month <= 12; month++) {
       const monthString = month < 10 ? `0${month}` : `${month}`;
       data.push({ id: uuidv4().toString(), device_type: 'Desktop'.toString(), month: `${year}-${monthString}-01`.toString(), count: getRandomCount() });

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { TabsTrigger, TabsList, TabsContent, Tabs } from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge"
 
 import React, { use, useState, useEffect } from "react";
 
@@ -63,6 +64,10 @@ function SqlEditor() {
 
         if (done) {
           console.log('Stream complete');
+          const lastIndex = accumulatedString.lastIndexOf("},{");
+          if (lastIndex !== -1 && !accumulatedString.endsWith("}]")) {
+            accumulatedString = accumulatedString.substring(0, lastIndex) + "}]";
+          }
           setData(JSON.parse(accumulatedString));
           reader.releaseLock();
         }
@@ -77,6 +82,8 @@ function SqlEditor() {
       }
     }
   };
+
+  console.log(data?.length);
 
   const [isDivVisible, setIsDivVisible] = useState(true);
 
@@ -113,7 +120,10 @@ function SqlEditor() {
             <div className="flex justify-between gap-4">
               <div className="flex gap-4">
                 <Button onClick={handleSubmit}>Submit</Button>
-                <Button onClick={handleCancel} variant="outline">Cancel</Button>
+                <Button onClick={handleCancel} variant="destructive">Cancel</Button>
+                {data && (
+                  <Badge variant="secondary">Row Count: {data.length.toLocaleString()}</Badge>
+                )}
               </div>
               <div className="flex gap-4">
                 <Button variant="outline">Save</Button>
@@ -132,7 +142,7 @@ function SqlEditor() {
             </TabsList>
               <CardContent>
                 <br />
-                <DataTable data={data?.slice(0, 10000) || undefined} />
+                <DataTable data={data || undefined}/>
               </CardContent>
             </Card>
           </TabsContent>
@@ -144,7 +154,9 @@ function SqlEditor() {
             </TabsList>
               <CardContent>
                 <br />
-                <LineChart tabledata={data?.slice(0, 10000) || undefined} />
+                { data && (
+                  <LineChart tabledata={data || undefined} />
+                )}
               </CardContent>
             </Card>
           </TabsContent>

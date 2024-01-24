@@ -1,5 +1,6 @@
 import { TableHead, TableRow, TableHeader, TableCell, TableBody, Table } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge"
 
 interface Props {
   data?: TableDataEntry[];
