@@ -20,9 +20,12 @@ function generateMockData(): Data[] {
       mobileTotal += getRandomCount() * 3;
 
       // Push data with cumulative count
-      data.push({ id: uuidv4().toString(), device_type: 'Desktop'.toString(), month: `${year}-${monthString}-01`.toString(), count: desktopTotal });
-      data.push({ id: uuidv4().toString(), device_type: 'Tablet'.toString(), month: `${year}-${monthString}-01`.toString(), count: tabletTotal });
-      data.push({ id: uuidv4().toString(), device_type: 'Mobile'.toString(), month: `${year}-${monthString}-01`.toString(), count: mobileTotal });
+      data.push({ id: uuidv4().toString(), operating_system: 'Windows'.toString(), device_type: 'Desktop'.toString(), month: `${year}-${monthString}-01`.toString(), count: desktopTotal * 0.1 });
+      data.push({ id: uuidv4().toString(), operating_system: 'MacOS'.toString(), device_type: 'Desktop'.toString(), month: `${year}-${monthString}-01`.toString(), count: desktopTotal * 0.2 });
+      data.push({ id: uuidv4().toString(), operating_system: 'Windows'.toString(), device_type: 'Tablet'.toString(), month: `${year}-${monthString}-01`.toString(), count: desktopTotal * 0.3 });
+      data.push({ id: uuidv4().toString(), operating_system: 'MacOS'.toString(), device_type: 'Tablet'.toString(), month: `${year}-${monthString}-01`.toString(), count: desktopTotal * 0.4 });
+      data.push({ id: uuidv4().toString(), operating_system: 'Windows'.toString(), device_type: 'Mobile'.toString(), month: `${year}-${monthString}-01`.toString(), count: desktopTotal * 0.5 });
+      data.push({ id: uuidv4().toString(), operating_system: 'MacOS'.toString(), device_type: 'Mobile'.toString(), month: `${year}-${monthString}-01`.toString(), count: desktopTotal * 0.6 });
     }
   }
 

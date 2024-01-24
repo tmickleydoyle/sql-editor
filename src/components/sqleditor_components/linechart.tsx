@@ -22,8 +22,10 @@ type TableDataEntry = {
 
 const transformDataForChart = (tableData: Props["tabledata"], xColumn: string, yColumn: string, seriesColumn: string) => {
   if (xColumn === null || yColumn === null) return [] as { id: string; data: { x: string; y: number }[] }[];
+
   const chartData = (tableData ?? []).reduce((acc, entry) => {
-    const existingEntry = acc.find((item: { id: string }) => item && item.id === entry[seriesColumn]);
+    // Find existing series based on the id and x value
+    const existingEntry = acc.find((series: { id: string; data: { x: string; y: number }[] }) => series.id === entry[seriesColumn]);  
 
     const newDataPoint = { x: entry[xColumn], y: entry[yColumn] };
 
@@ -36,28 +38,35 @@ const transformDataForChart = (tableData: Props["tabledata"], xColumn: string, y
         if (existingDataPoint) {
           existingDataPoint.y += entry[yColumn];
         } else {
-          overallSeries.data.push(newDataPoint);
+          overallSeries.data.push({ ...newDataPoint });
         }
       } else {
         acc.push({
           id: "Overall",
-          data: [newDataPoint],
+          data: [{ ...newDataPoint }],
         });
       }
     } else if (existingEntry) {
-      existingEntry.data.push(newDataPoint);
+      const existingDataPoint = existingEntry.data.find((data: { x: string; y: number }) => data.x === entry[xColumn]);
+
+      if (existingDataPoint) {
+        existingDataPoint.y += entry[yColumn];
+      } else {
+        existingEntry.data.push({ ...newDataPoint });
+      }
     } else {
       acc.push({
         id: entry[seriesColumn],
-        data: [newDataPoint],
+        data: [{ ...newDataPoint }],
       });
     }
-  
+
     return acc;
-  }, [] as { id: string; data: { x: string; y: number }[] }[]);
+  }, []);
 
   return chartData;
 };
+
 
 function LineChart(props: Props) {
   const [xColumn, setXColumn] = useState('');
