@@ -38,14 +38,7 @@ function SqlEditor() {
     for (let retry = 0; retry <= maxRetries; retry++) {
       try {
         // Send the code to the server to run the query
-        const response = await fetch('/api/data'
-          , {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ code })
-        });
+        const response = await fetch('/api/data');
         if (response.status !== 200) {
           throw new Error('Error fetching data');
         }
