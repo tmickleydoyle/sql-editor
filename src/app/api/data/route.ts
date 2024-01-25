@@ -53,14 +53,12 @@ function createStreamWithDelay(): ReadableStream {
     const emptyObject = encoder.encode("{}");
 
     const stream = new ReadableStream({
-      // Immediately enqueue an empty object to signal start of stream
+       // Immediately enqueue an empty object to signal start of stream
       async pull(controller) {
         controller.enqueue(emptyObject);
         controller.close();
       },
       async start(controller) {
-        // Wait 30 seconds before enqueueing data
-        await new Promise((resolve) => setTimeout(resolve, 30000));
         controller.enqueue(dataChunk);
         controller.close();
       },
