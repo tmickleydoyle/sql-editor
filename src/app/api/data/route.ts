@@ -59,7 +59,6 @@ function createStreamWithDelay(): ReadableStream {
         controller.close();
       },
       async start(controller) {
-        await new Promise((resolve) => setTimeout(resolve, 30000));
         controller.enqueue(dataChunk);
         controller.close();
       },
