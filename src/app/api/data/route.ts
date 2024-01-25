@@ -59,6 +59,8 @@ function createStreamWithDelay(): ReadableStream {
         controller.close();
       },
       async start(controller) {
+        // Delay for 1 second before sending data
+        await new Promise((resolve) => setTimeout(resolve, 30000));
         controller.enqueue(dataChunk);
         controller.close();
       },
