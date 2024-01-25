@@ -59,6 +59,7 @@ function createStreamWithDelay(): ReadableStream {
         controller.close();
       },
       async start(controller) {
+        // Wait 30 seconds before enqueueing data
         await new Promise((resolve) => setTimeout(resolve, 30000));
         controller.enqueue(dataChunk);
         controller.close();
