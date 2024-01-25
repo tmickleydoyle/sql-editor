@@ -1,7 +1,8 @@
 {
   "functions": {
     "app/api/**/*": {
-      "maxDuration": 900
+        // This can be set to 900 for Enterprise customers and 300 for Pro customers
+      "maxDuration": 10
     }
   }
 }
