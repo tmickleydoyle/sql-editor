@@ -1,7 +1,6 @@
 {
   "functions": {
     "app/api/**/*": {
-      "comment": "This function is set to timeout after 10 seconds for Free customers. This can be set to 900 for Enterprise customers and 300 for Pro customers",
       "maxDuration": 10
     }
   }
