@@ -50,15 +50,12 @@ function createStreamWithDelay(): ReadableStream {
     const data = generateMockData();
     const serializedData = JSON.stringify(data);
     const dataChunk = encoder.encode(serializedData);
-    const emptyObject = encoder.encode("{}");
+    const emptyObject = encoder.encode("");
 
     const stream = new ReadableStream({
-      // Immediately enqueue an empty object to signal start of stream
-      async pull(controller) {
-        controller.enqueue(emptyObject);
-        controller.close();
-      },
       async start(controller) {
+        controller.enqueue(emptyObject);
+        await new Promise((resolve) => setTimeout(resolve, 30000));
         controller.enqueue(dataChunk);
         controller.close();
       },
