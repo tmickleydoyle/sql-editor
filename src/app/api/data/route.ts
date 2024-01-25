@@ -6,26 +6,22 @@ interface Data {
 
 function generateMockData(): Data[] {
   const data: Data[] = [];
-  let desktopTotal = 0;
-  let tabletTotal = 0;
-  let mobileTotal = 0;
+  let total = 0;
 
   for (let year = 1983; year <= 2024; year++) {
     for (let month = 1; month <= 12; month++) {
       const monthString = month < 10 ? `0${month}` : `${month}`;
 
       // Update cumulative count for each device type
-      desktopTotal += getRandomCount() * 2;
-      tabletTotal += getRandomCount() * 1;
-      mobileTotal += getRandomCount() * 3;
+      total += getRandomCount();
 
       // Push data with cumulative count
-      data.push({ id: uuidv4().toString(), operating_system: 'Windows'.toString(), device_type: 'Desktop'.toString(), month: `${year}-${monthString}-01`.toString(), count: desktopTotal * 0.1 });
-      data.push({ id: uuidv4().toString(), operating_system: 'MacOS'.toString(), device_type: 'Desktop'.toString(), month: `${year}-${monthString}-01`.toString(), count: desktopTotal * 0.2 });
-      data.push({ id: uuidv4().toString(), operating_system: 'Windows'.toString(), device_type: 'Tablet'.toString(), month: `${year}-${monthString}-01`.toString(), count: desktopTotal * 0.3 });
-      data.push({ id: uuidv4().toString(), operating_system: 'MacOS'.toString(), device_type: 'Tablet'.toString(), month: `${year}-${monthString}-01`.toString(), count: desktopTotal * 0.4 });
-      data.push({ id: uuidv4().toString(), operating_system: 'Windows'.toString(), device_type: 'Mobile'.toString(), month: `${year}-${monthString}-01`.toString(), count: desktopTotal * 0.5 });
-      data.push({ id: uuidv4().toString(), operating_system: 'MacOS'.toString(), device_type: 'Mobile'.toString(), month: `${year}-${monthString}-01`.toString(), count: desktopTotal * 0.6 });
+      data.push({ id: uuidv4().toString(), operating_system: 'Windows'.toString(), device_type: 'Desktop'.toString(), month: `${year}-${monthString}-01`.toString(), count: total * 0.1 });
+      data.push({ id: uuidv4().toString(), operating_system: 'MacOS'.toString(), device_type: 'Desktop'.toString(), month: `${year}-${monthString}-01`.toString(), count: total * 0.2 });
+      data.push({ id: uuidv4().toString(), operating_system: 'Windows'.toString(), device_type: 'Tablet'.toString(), month: `${year}-${monthString}-01`.toString(), count: total * 0.3 });
+      data.push({ id: uuidv4().toString(), operating_system: 'MacOS'.toString(), device_type: 'Tablet'.toString(), month: `${year}-${monthString}-01`.toString(), count: total * 0.4 });
+      data.push({ id: uuidv4().toString(), operating_system: 'Windows'.toString(), device_type: 'Mobile'.toString(), month: `${year}-${monthString}-01`.toString(), count: total * 0.5 });
+      data.push({ id: uuidv4().toString(), operating_system: 'MacOS'.toString(), device_type: 'Mobile'.toString(), month: `${year}-${monthString}-01`.toString(), count: total * 0.6 });
     }
   }
 
@@ -38,8 +34,7 @@ function getRandomCount(): number {
 
 export async function GET(req: Request) {
   try {
-    const data = generateMockData();
-    const stream = createStreamFromData(data);
+    const stream = createStreamWithDelay();
     return new Response(stream as any, {
       headers: { "Content-Type": "application/json" },
     });
@@ -49,16 +44,27 @@ export async function GET(req: Request) {
   }
 }
 
-function createStreamFromData(data: Data[]): ReadableStream {
+function createStreamWithDelay(): ReadableStream {
   try {
-    const serializedData = JSON.stringify(data);
     const encoder = new TextEncoder();
+    const data = generateMockData();
+    const serializedData = JSON.stringify(data);
+    const dataChunk = encoder.encode(serializedData);
+    const emptyObject = encoder.encode("{}");
+
     const stream = new ReadableStream({
-      start(controller) {
-        controller.enqueue(encoder.encode(serializedData));
+      // Immediately enqueue an empty object to signal start of stream
+      async pull(controller) {
+        controller.enqueue(emptyObject);
+        controller.close();
+      },
+      async start(controller) {
+        await new Promise((resolve) => setTimeout(resolve, 30000));
+        controller.enqueue(dataChunk);
         controller.close();
       },
     });
+
     return stream;
   } catch (error) {
     console.error('Error creating stream:', error);
