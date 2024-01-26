@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch"
 import { TabsTrigger, TabsList, TabsContent, Tabs } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 
-import React, { use, useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import Playground from "./sqleditor_components/playground";
 import DataCatalog from "./sqleditor_components/catalog";

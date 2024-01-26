@@ -137,7 +137,7 @@ function LineChart(props: Props) {
   return (
     <>
         <div className="grid grid-cols-[85%_15%]">
-          <div className="aspect-[10/4]">
+          <div className="aspect-[16/9]">
             <ResponsiveLine
               data={chartData}
               margin={{ top: 50, right: 150, bottom: 60, left: 50 }}
