@@ -24,7 +24,6 @@ const transformDataForChart = (tableData: Props["tabledata"], xColumn: string, y
   if (xColumn === null || yColumn === null) return [] as { id: string; data: { x: string; y: number }[] }[];
 
   const chartData = (tableData ?? []).reduce((acc, entry) => {
-    // Find existing series based on the id and x value
     const existingEntry = acc.find((series: { id: string; data: { x: string; y: number }[] }) => series.id === entry[seriesColumn]);  
 
     const newDataPoint = { x: entry[xColumn], y: entry[yColumn] };
@@ -73,7 +72,6 @@ function LineChart(props: Props) {
   const [yColumn, setYColumn] = useState('');
   const [seriesColumn, setSeriesColumn] = useState('None');
   const [chartData, setChartData] = useState<{ id: string; data: { x: string; y: number }[] }[]>([]);
-  const [tickSize, setTickSize] = useState(5);
 
   useEffect(() => {
     const data = transformDataForChart(props.tabledata, xColumn, yColumn, seriesColumn);
@@ -104,15 +102,11 @@ function LineChart(props: Props) {
 
   return (
     <>
-      <div className="flex justify-end mb-4">
-        <Button variant="outline">Download Chart</Button>
-      </div>
-      
         <div className="grid grid-cols-[85%_15%]">
           <div className="aspect-[10/4]">
             <ResponsiveLine
               data={chartData}
-              margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+              margin={{ top: 50, right: 150, bottom: 60, left: 50 }}
               xScale={{ type: 'point' }}
               yScale={{
                   type: 'linear',
@@ -121,16 +115,17 @@ function LineChart(props: Props) {
                   stacked: false,
                   reverse: false
               }}
-              yFormat=" >-.2f"
+              yFormat={" >-,.2f"}
+              curve="natural"
               axisTop={null}
               axisRight={null}
               axisBottom={{
                   tickSize: 5,
                   tickPadding: 5,
-                  tickRotation: -25,
+                  tickRotation: -40,
                   legendOffset: 36,
                   legendPosition: 'middle',
-                  tickValues: chartData.length > 0 && chartData[0].data.length > 20 ? chartData[0].data.filter((_, index) => index % 10 === 0).map((data) => data.x) : undefined,
+                  tickValues: chartData.length > 0 && chartData[0].data.length > 12 ? chartData[0].data.filter((_, index) => index % 4 === 0).map((data) => data.x) : undefined,
               }}
               axisLeft={{
                   tickSize: 5,
@@ -139,8 +134,29 @@ function LineChart(props: Props) {
                   legendOffset: -40,
                   legendPosition: 'middle'
               }}
-              pointSize={3}
+              enableGridX={false}
+              pointSize={1}
+              // enableSlices="x"
+              tooltip={({ point }) => {
+                  return (
+                      <div
+                          style={{
+                              background: 'white',
+                              padding: '9px 12px',
+                              border: '1px solid #ccc',
+                          }}
+                      >
+                          <div className="container">
+                            <div style={{ display: 'inline-block', height: '15px', width: '15px', backgroundColor: point.serieColor}}></div>
+                            <span className="bold"><b>{' '}{point.serieId}{' '}</b></span>
+                            <span className="bold">{'('}{point.data.xFormatted}{')'}:{' '}</span>
+                            <span className="bold">{point.data.yFormatted}</span>
+                        </div>
+                      </div>
+                  )
+              }}
               pointColor={{ theme: 'background' }}
+              colors={{ scheme: 'category10' }}
               pointBorderWidth={1}
               pointBorderColor={{ from: 'serieColor' }}
               pointLabelYOffset={-12}
@@ -174,6 +190,9 @@ function LineChart(props: Props) {
             />
           </div>
           <div>
+            <div className="flex justify-end mb-4">
+              <Button variant="outline">Download Chart</Button>
+            </div>
               <Label htmlFor="framework">x-axis</Label>
               <Select onValueChange={(value) => setXColumn(value)}>
                 <SelectTrigger id="x-axis">

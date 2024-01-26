@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid'
 
 interface Data {
   [key: string]: any;
@@ -8,7 +8,7 @@ function generateMockData(): Data[] {
   const data: Data[] = [];
   let total = 0;
 
-  for (let year = 1983; year <= 2024; year++) {
+  for (let year = 2020; year <= 2024; year++) {
     for (let month = 1; month <= 12; month++) {
       const monthString = month < 10 ? `0${month}` : `${month}`;
 
@@ -16,12 +16,12 @@ function generateMockData(): Data[] {
       total += getRandomCount();
 
       // Push data with cumulative count
-      data.push({ id: uuidv4().toString(), operating_system: 'Windows'.toString(), device_type: 'Desktop'.toString(), month: `${year}-${monthString}-01`.toString(), count: total * 0.1 });
-      data.push({ id: uuidv4().toString(), operating_system: 'MacOS'.toString(), device_type: 'Desktop'.toString(), month: `${year}-${monthString}-01`.toString(), count: total * 0.2 });
-      data.push({ id: uuidv4().toString(), operating_system: 'Windows'.toString(), device_type: 'Tablet'.toString(), month: `${year}-${monthString}-01`.toString(), count: total * 0.3 });
-      data.push({ id: uuidv4().toString(), operating_system: 'MacOS'.toString(), device_type: 'Tablet'.toString(), month: `${year}-${monthString}-01`.toString(), count: total * 0.4 });
-      data.push({ id: uuidv4().toString(), operating_system: 'Windows'.toString(), device_type: 'Mobile'.toString(), month: `${year}-${monthString}-01`.toString(), count: total * 0.5 });
-      data.push({ id: uuidv4().toString(), operating_system: 'MacOS'.toString(), device_type: 'Mobile'.toString(), month: `${year}-${monthString}-01`.toString(), count: total * 0.6 });
+      data.push({ id: nanoid().toString(), operating_system: 'Windows'.toString(), device_type: 'Desktop'.toString(), month: `${year}-${monthString}-01`.toString(), count: total * 0.1 });
+      data.push({ id: nanoid().toString(), operating_system: 'MacOS'.toString(), device_type: 'Desktop'.toString(), month: `${year}-${monthString}-01`.toString(), count: total * 0.2 });
+      data.push({ id: nanoid().toString(), operating_system: 'Windows'.toString(), device_type: 'Tablet'.toString(), month: `${year}-${monthString}-01`.toString(), count: total * 0.3 });
+      data.push({ id: nanoid().toString(), operating_system: 'MacOS'.toString(), device_type: 'Tablet'.toString(), month: `${year}-${monthString}-01`.toString(), count: total * 0.4 });
+      data.push({ id: nanoid().toString(), operating_system: 'Windows'.toString(), device_type: 'Mobile'.toString(), month: `${year}-${monthString}-01`.toString(), count: total * 0.5 });
+      data.push({ id: nanoid().toString(), operating_system: 'MacOS'.toString(), device_type: 'Mobile'.toString(), month: `${year}-${monthString}-01`.toString(), count: total * 0.6 });
     }
   }
 
