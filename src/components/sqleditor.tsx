@@ -20,13 +20,9 @@ interface DataItem {
   [key: string]: any | any;
 }
 
-interface SqlEditorProps {
-  data?: DataItem[] | any;
-}
-
 function SqlEditor() {
   const [data, setData] = useState<DataItem[] | null>(null);
-  const [code, setCode] = useState(`SELECT * FROM devices.device_usage LIMIT 10000;`);
+  const [code, setCode] = useState(`SELECT * FROM devices.device_usage;`);
   const [hitRowMax, setHitRowMax] = useState(false);
   function handleOnChange(value?: string) {
     setCode(value || '');
@@ -37,11 +33,13 @@ function SqlEditor() {
 
     for (let retry = 0; retry <= maxRetries; retry++) {
       try {
-        // Send the code to the server to run the query
-        const response = await fetch('/api/data');
-        if (response.status !== 200) {
-          throw new Error('Error fetching data');
-        }
+        const response = await fetch('/api/data', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ code }),
+        });
 
         const data = response.body;
         if (!data) {
@@ -63,7 +61,6 @@ function SqlEditor() {
         }
 
         if (done) {
-          console.log('Stream complete');
           if (!accumulatedString.endsWith("}]")) {
             const lastIndex = accumulatedString.lastIndexOf("},{");
             if (lastIndex !== -1 && !accumulatedString.endsWith("}]")) {
@@ -82,7 +79,7 @@ function SqlEditor() {
         }
       }
     }
-    console.log(data?.length);
+
     if (data && data.length >= 10000) {
       setHitRowMax(true);
     }
@@ -95,7 +92,7 @@ function SqlEditor() {
   };
 
   const handleSubmit = () => {
-    setData(null); // Clear previous data when submitting a new query
+    setData(null);
     fetchData();
   };
 
@@ -111,8 +108,8 @@ function SqlEditor() {
     </div>
     <div className={`grid ${!isDivVisible ? 'grid-cols-[75%_25%]' : 'grid-cols-[100%_0%]'}`}>
       <div className="grid-rows-[50%_50%] gap-4 p-4">
-        <Card className="border-none">
-          <Card className="flex flex-col border-none">
+        <Card className="border-none shadow-none">
+          <Card className="flex flex-col border-none shadow-none">
           <CardHeader>
             <Input className="mb-2" placeholder="Enter Query Title" />
             <Input className="mb-2" placeholder="Describe what the query is doing" />
@@ -137,7 +134,7 @@ function SqlEditor() {
           </Card>
         <Tabs defaultValue="table">
           <TabsContent value="table">
-            <Card className="flex flex-col border-none">
+            <Card className="flex flex-col border-none shadow-none">
             <TabsList className="gap-4">
               <TabsTrigger value="table">Table</TabsTrigger>
               <TabsTrigger value="chart">Chart</TabsTrigger>
@@ -149,7 +146,7 @@ function SqlEditor() {
             </Card>
           </TabsContent>
           <TabsContent value="chart">
-            <Card className="flex flex-col border-none">
+            <Card className="flex flex-col border-none shadow-none">
             <TabsList className="gap-4">
               <TabsTrigger value="table">Table</TabsTrigger>
               <TabsTrigger value="chart">Chart</TabsTrigger>

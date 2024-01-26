@@ -52,8 +52,8 @@ function DataCatalog() {
 
   return (
     <>
-      <Card className="border-none">
-        <Card className="flex flex-col border-none">
+      <Card className="border-none shadow-none">
+        <Card className="flex flex-col border-none shadow-none">
           <CardHeader>
             <h2 className="text-xl font-semibold">Data Catalog</h2>
           </CardHeader>

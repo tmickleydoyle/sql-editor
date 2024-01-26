@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { nanoid } from 'nanoid';
-import path from 'path';
 
 interface Props {
   className?: string;
