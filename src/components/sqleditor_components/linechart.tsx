@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
+import React, { useState, useEffect, useCallback } from "react";
 import { ResponsiveLine } from "@nivo/line";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,7 +10,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { uuid } from "uuidv4";
+import { nanoid } from 'nanoid';
+import path from 'path';
 
 interface Props {
   className?: string;
@@ -72,6 +74,39 @@ function LineChart(props: Props) {
   const [yColumn, setYColumn] = useState('');
   const [seriesColumn, setSeriesColumn] = useState('None');
   const [chartData, setChartData] = useState<{ id: string; data: { x: string; y: number }[] }[]>([]);
+  const router = useRouter();
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams();
+    if (xColumn) {
+      queryParams.append('xColumn', xColumn);
+    }
+    if (yColumn) {
+      queryParams.append('yColumn', yColumn);
+    }
+    if (seriesColumn) {
+      queryParams.append('seriesColumn', seriesColumn);
+    }
+    const newUrl = `${pathname}?${queryParams.toString()}`;
+    router.push(newUrl);
+  }, [xColumn, yColumn, seriesColumn, pathname, router]);
+
+  useEffect(() => {
+    const x = searchParams.get('xColumn');
+    const y = searchParams.get('yColumn');
+    const series = searchParams.get('seriesColumn');
+    if (x) {
+      setXColumn(x);
+    }
+    if (y) {
+      setYColumn(y);
+    }
+    if (series) {
+      setSeriesColumn(series);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const data = transformDataForChart(props.tabledata, xColumn, yColumn, seriesColumn);
@@ -85,7 +120,7 @@ function LineChart(props: Props) {
     });
 
     return numericColumns.map((column) => (
-      <SelectItem key={uuid()} value={column}>{column}</SelectItem>
+      <SelectItem key={nanoid()} value={column}>{column}</SelectItem>
     ));
   };
 
@@ -96,7 +131,7 @@ function LineChart(props: Props) {
     });
 
     return numericColumns.map((column) => (
-      <SelectItem key={uuid()} value={column}>{column}</SelectItem>
+      <SelectItem key={nanoid()} value={column}>{column}</SelectItem>
     ));
   };
 
@@ -217,7 +252,7 @@ function LineChart(props: Props) {
                   <SelectValue placeholder={null} />
                 </SelectTrigger>
                 <SelectContent position="popper">
-                  <SelectItem key={uuid()} value={'None'}>{'None'}</SelectItem>
+                  <SelectItem key={nanoid()} value={'None'}>{'None'}</SelectItem>
                   {getStringColumnOptions()}
                 </SelectContent>
               </Select>
