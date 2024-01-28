@@ -225,7 +225,7 @@ function LineChart(props: Props) {
           </div>
           <div>
             <div className="flex justify-end mb-4">
-              <Button variant="outline">Download Chart</Button>
+              <Button variant="outline" disabled>Download Chart</Button>
             </div>
               <Label htmlFor="framework">x-axis</Label>
               <Select onValueChange={(value) => setXColumn(value)}>
