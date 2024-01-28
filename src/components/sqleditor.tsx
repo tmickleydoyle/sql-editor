@@ -125,9 +125,9 @@ function SqlEditor() {
                 )}
               </div>
               <div className="flex gap-4">
-                <Button variant="outline">Save</Button>
-                <Button variant="outline">Ask AI</Button>
-                <Button variant="outline">Share</Button>
+                <Button variant="outline" disabled>Save</Button>
+                <Button variant="outline" disabled>Ask AI</Button>
+                <Button variant="outline" disabled>Share</Button>
               </div>
             </div>
           </CardContent>
