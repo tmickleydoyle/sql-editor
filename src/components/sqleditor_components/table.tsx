@@ -14,7 +14,7 @@ function DataTable(props: Props) {
   return (
     <>
       <div className="flex justify-end mb-4" {...props}>
-        <Button variant="outline">Download Data</Button>
+        <Button variant="outline" disabled>Download Data</Button>
       </div>
       <div className="table-container">
         <Table>
