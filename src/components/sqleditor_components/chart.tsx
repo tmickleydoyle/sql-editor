@@ -142,14 +142,18 @@ function LineChart(props: Props) {
     if (seriesColumn) {
       queryParams.append('seriesColumn', seriesColumn);
     }
+    if (chartType) {
+      queryParams.append('chartType', chartType);
+    }
     const newUrl = `${pathname}?${queryParams.toString()}`;
     router.push(newUrl);
-  }, [xColumn, yColumn, seriesColumn, pathname, router]);
+  }, [xColumn, yColumn, seriesColumn, pathname, router, chartType]);
 
   useEffect(() => {
     const x = searchParams.get('xColumn');
     const y = searchParams.get('yColumn');
     const series = searchParams.get('seriesColumn');
+    const chartType = searchParams.get('chartType');
     if (x) {
       setXColumn(x);
     }
@@ -158,6 +162,9 @@ function LineChart(props: Props) {
     }
     if (series) {
       setSeriesColumn(series);
+    }
+    if (chartType) {
+      setChartType(chartType as 'line' | 'bar');
     }
   }, [searchParams]);
 
@@ -192,190 +199,197 @@ function LineChart(props: Props) {
     ));
   };
 
-  console.log('**************')
-  console.log(barData)
-  console.log(xColumn)
-
   return (
     <>
         <div className="grid grid-cols-[85%_15%]">
           <div className="aspect-[16/9]">
-            <ResponsiveLine
-              data={chartData}
-              margin={{ top: 50, right: 150, bottom: 60, left: 50 }}
-              xScale={{ type: 'point' }}
-              yScale={{
-                  type: 'linear',
-                  min: 0,
-                  max: 'auto',
-                  stacked: false,
-                  reverse: false
-              }}
-              yFormat={" >-,.2f"}
-              curve="natural"
-              axisTop={null}
-              axisRight={null}
-              axisBottom={{
-                  tickSize: 5,
-                  tickPadding: 5,
-                  tickRotation: -40,
-                  legendOffset: 36,
-                  legendPosition: 'middle',
-                  tickValues: chartData.length > 0 && chartData[0].data.length > 12 ? chartData[0].data.filter((_, index) => index % 4 === 0).map((data) => data.x) : undefined,
-              }}
-              axisLeft={{
-                  tickSize: 5,
-                  tickPadding: 5,
-                  tickRotation: 0,
-                  legendOffset: -40,
-                  legendPosition: 'middle'
-              }}
-              enableGridX={false}
-              pointSize={1}
-              // enableSlices="x"
-              tooltip={({ point }) => {
-                  return (
-                      <div
-                          style={{
-                              background: 'white',
-                              padding: '9px 12px',
-                              border: '1px solid #ccc',
-                          }}
-                      >
-                          <div className="container">
-                            <div style={{ display: 'inline-block', height: '15px', width: '15px', backgroundColor: point.serieColor}}></div>
-                            <span className="bold"><b>{' '}{point.serieId}{' '}</b></span>
-                            <span className="bold">{'('}{point.data.xFormatted}{')'}:{' '}</span>
-                            <span className="bold">{point.data.yFormatted}</span>
-                        </div>
-                      </div>
-                  )
-              }}
-              pointColor={{ theme: 'background' }}
-              colors={{ scheme: 'category10' }}
-              pointBorderWidth={1}
-              pointBorderColor={{ from: 'serieColor' }}
-              pointLabelYOffset={-12}
-              useMesh={true}
-              legends={[
-                  {
-                      anchor: 'bottom-right',
-                      direction: 'column',
-                      justify: false,
-                      translateX: 100,
-                      translateY: 0,
-                      itemsSpacing: 0,
-                      itemDirection: 'left-to-right',
-                      itemWidth: 80,
-                      itemHeight: 20,
-                      itemOpacity: 0.75,
-                      symbolSize: 12,
-                      symbolShape: 'circle',
-                      symbolBorderColor: 'rgba(0, 0, 0, .5)',
-                      effects: [
-                          {
-                              on: 'hover',
-                              style: {
-                                  itemBackground: 'rgba(0, 0, 0, .03)',
-                                  itemOpacity: 1
+            {chartType === 'line' && (
+              <>
+                <h1 className="text-2xl font-semibold">Line Chart</h1>
+                <ResponsiveLine
+                  data={chartData}
+                  margin={{ top: 50, right: 150, bottom: 60, left: 50 }}
+                  xScale={{ type: 'point' }}
+                  yScale={{
+                      type: 'linear',
+                      min: 0,
+                      max: 'auto',
+                      stacked: false,
+                      reverse: false
+                  }}
+                  yFormat={" >-,.2f"}
+                  curve="natural"
+                  axisTop={null}
+                  axisRight={null}
+                  axisBottom={{
+                      tickSize: 5,
+                      tickPadding: 5,
+                      tickRotation: -40,
+                      legendOffset: 36,
+                      legendPosition: 'middle',
+                      tickValues: chartData.length > 0 && chartData[0].data.length > 12 ? chartData[0].data.filter((_, index) => index % 4 === 0).map((data) => data.x) : undefined,
+                  }}
+                  axisLeft={{
+                      tickSize: 5,
+                      tickPadding: 5,
+                      tickRotation: 0,
+                      legendOffset: -40,
+                      legendPosition: 'middle'
+                  }}
+                  enableGridX={false}
+                  pointSize={1}
+                  // enableSlices="x"
+                  tooltip={({ point }) => {
+                      return (
+                          <div
+                              style={{
+                                  background: 'white',
+                                  padding: '9px 12px',
+                                  border: '1px solid #ccc',
+                              }}
+                          >
+                              <div className="container">
+                                <div style={{ display: 'inline-block', height: '13px', width: '13px', backgroundColor: point.serieColor}}></div>
+                                <span className="bold">{' '}{point.serieId}{' '}</span>
+                                <span className="bold">{' -'}{point.data.xFormatted}:{' '}</span>
+                                <span className="bold"><b>{point.data.yFormatted}</b></span>
+                            </div>
+                          </div>
+                      )
+                  }}
+                  pointColor={{ theme: 'background' }}
+                  colors={{ scheme: 'category10' }}
+                  pointBorderWidth={1}
+                  pointBorderColor={{ from: 'serieColor' }}
+                  pointLabelYOffset={-12}
+                  useMesh={true}
+                  legends={[
+                      {
+                          anchor: 'bottom-right',
+                          direction: 'column',
+                          justify: false,
+                          translateX: 100,
+                          translateY: 0,
+                          itemsSpacing: 0,
+                          itemDirection: 'left-to-right',
+                          itemWidth: 80,
+                          itemHeight: 20,
+                          itemOpacity: 0.75,
+                          symbolSize: 12,
+                          symbolShape: 'circle',
+                          symbolBorderColor: 'rgba(0, 0, 0, .5)',
+                          effects: [
+                              {
+                                  on: 'hover',
+                                  style: {
+                                      itemBackground: 'rgba(0, 0, 0, .03)',
+                                      itemOpacity: 1
+                                  }
                               }
-                          }
-                      ],
-                  }
-              ]}
-            />
-            <ResponsiveBar
-              data={barData}
-              keys={seriesKeys}
-              indexBy={xColumn}
-              margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
-              padding={0.3}
-              valueScale={{ type: 'linear' }}
-              indexScale={{ type: 'band', round: true }}
-              colors={{ scheme: 'category10' }}
-              defs={[
-                  {
-                      id: 'dots',
-                      type: 'patternDots',
-                      background: 'inherit',
-                      color: '#38bcb2',
-                      size: 4,
-                      padding: 1,
-                      stagger: true
-                  },
-                  {
-                      id: 'lines',
-                      type: 'patternLines',
-                      background: 'inherit',
-                      color: '#eed312',
-                      rotation: -45,
-                      lineWidth: 6,
-                      spacing: 10
-                  }
-              ]}
-              borderColor={{
-                  from: 'color',
-                  modifiers: [
-                      [
-                          'darker',
-                          1.6
+                          ],
+                      }
+                  ]}
+                />
+              </>
+            )}
+            {chartType === 'bar' && (
+              <>
+                <h1 className="text-2xl font-semibold">Bar Chart</h1>
+                <ResponsiveBar
+                  data={barData}
+                  keys={seriesKeys}
+                  indexBy={xColumn}
+                  margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
+                  padding={0.3}
+                  valueScale={{ type: 'linear' }}
+                  indexScale={{ type: 'band', round: true }}
+                  colors={{ scheme: 'category10' }}
+                  enableLabel={false}
+                  defs={[
+                      {
+                          id: 'dots',
+                          type: 'patternDots',
+                          background: 'inherit',
+                          color: '#38bcb2',
+                          size: 4,
+                          padding: 1,
+                          stagger: true
+                      },
+                      {
+                          id: 'lines',
+                          type: 'patternLines',
+                          background: 'inherit',
+                          color: '#eed312',
+                          rotation: -45,
+                          lineWidth: 6,
+                          spacing: 10
+                      }
+                  ]}
+                  borderColor={{
+                      from: 'color',
+                      modifiers: [
+                          [
+                              'darker',
+                              1.6
+                          ]
                       ]
-                  ]
-              }}
-              axisTop={null}
-              axisRight={null}
-              axisBottom={{
-                  tickSize: 5,
-                  tickPadding: 5,
-                  tickRotation: 0,
-                  legendPosition: 'middle',
-                  legendOffset: 32,
-                  truncateTickAt: 0
-              }}
-              axisLeft={{
-                  tickSize: 5,
-                  tickPadding: 5,
-                  tickRotation: 0,
-                  legendPosition: 'middle',
-                  legendOffset: -40,
-                  truncateTickAt: 0
-              }}
-              labelSkipWidth={12}
-              labelSkipHeight={12}
-              labelTextColor={{
-                  from: 'color',
-                  modifiers: [
-                      [
-                          'darker',
-                          1.6
+                  }}
+                  axisTop={null}
+                  axisRight={null}
+                  axisBottom={{
+                      tickSize: 5,
+                      tickPadding: 5,
+                      tickRotation: -40,
+                      legendOffset: 36,
+                      legendPosition: 'middle',
+                      tickValues: chartData.length > 0 && chartData[0].data.length > 12 ? chartData[0].data.filter((_, index) => index % 4 === 0).map((data) => data.x) : undefined,
+                  }}
+                  axisLeft={{
+                      tickSize: 5,
+                      tickPadding: 5,
+                      tickRotation: 0,
+                      legendPosition: 'middle',
+                      legendOffset: -40,
+                      truncateTickAt: 0
+                  }}
+                  labelSkipWidth={12}
+                  labelSkipHeight={12}
+                  labelTextColor={{
+                      from: 'color',
+                      modifiers: [
+                          [
+                              'darker',
+                              1.6
+                          ]
                       ]
-                  ]
-              }}
-              legends={[
-                  {
-                      dataFrom: 'keys',
-                      anchor: 'bottom-right',
-                      direction: 'column',
-                      justify: false,
-                      translateX: 120,
-                      translateY: 0,
-                      itemsSpacing: 2,
-                      itemWidth: 100,
-                      itemHeight: 20,
-                      itemDirection: 'left-to-right',
-                      itemOpacity: 0.85,
-                      symbolSize: 20,
-                      effects: [
-                          {
-                              on: 'hover',
-                              style: {
-                                  itemOpacity: 1
+                  }}
+                  legends={[
+                      {
+                          dataFrom: 'keys',
+                          anchor: 'bottom-right',
+                          direction: 'column',
+                          justify: false,
+                          translateX: 120,
+                          translateY: 0,
+                          itemsSpacing: 2,
+                          itemWidth: 100,
+                          itemHeight: 20,
+                          itemDirection: 'left-to-right',
+                          itemOpacity: 0.85,
+                          symbolSize: 20,
+                          effects: [
+                              {
+                                  on: 'hover',
+                                  style: {
+                                      itemOpacity: 1
+                                  }
                               }
-                          }
-                      ]
-                  }
-              ]}
-          />
+                          ]
+                      }
+                  ]}
+              />
+              </>
+            )}
           </div>
           <div>
             <div className="flex justify-end mb-4">
