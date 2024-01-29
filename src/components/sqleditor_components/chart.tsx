@@ -28,7 +28,11 @@ const transformDataForBar = (tableData: Props["tabledata"], xColumn: string, yCo
     const existingItem = acc.find((entry: { [key: string]: any }) => entry[xColumn] === xValue);
 
     if (existingItem) {
-      existingItem[item[seriesColumn] || 'Overall'] = item[yColumn];
+      if (existingItem[item[seriesColumn] || 'Overall']) {
+        existingItem[item[seriesColumn] || 'Overall'] += item[yColumn];
+      } else {
+        existingItem[item[seriesColumn] || 'Overall'] = item[yColumn];
+      }
     } else {
       const newItem: { [key: string]: any } = { [xColumn]: xValue };
       newItem[item[seriesColumn] || 'Overall'] = item[yColumn];
@@ -60,6 +64,7 @@ const transformDataForBar = (tableData: Props["tabledata"], xColumn: string, yCo
 
   return transformedData;
 };
+
 
 const generateKeys = (tableData: Props["tabledata"], seriesColumn: string) => {
   const keysSet = new Set();
