@@ -1,6 +1,7 @@
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import React, { useState, useEffect, useCallback } from "react";
 import { ResponsiveLine } from "@nivo/line";
+import { ResponsiveBar } from '@nivo/bar'
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -19,6 +20,56 @@ interface Props {
 
 type TableDataEntry = {
   [key: string]: any;
+};
+
+const transformDataForBar = (tableData: Props["tabledata"], xColumn: string, yColumn: string, seriesColumn: string) => {
+  const aggregatedData = (tableData ?? []).reduce((acc, item) => {
+    const xValue = item[xColumn];
+    const existingItem = acc.find((entry: { [key: string]: any }) => entry[xColumn] === xValue);
+
+    if (existingItem) {
+      existingItem[item[seriesColumn] || 'Overall'] = item[yColumn];
+    } else {
+      const newItem: { [key: string]: any } = { [xColumn]: xValue };
+      newItem[item[seriesColumn] || 'Overall'] = item[yColumn];
+      acc.push(newItem);
+    }
+
+    return acc;
+  }, []);
+
+  if (!Array.isArray(aggregatedData)) {
+    console.error("Aggregated data is not an array.");
+    return;
+  }
+
+  const transformedData = aggregatedData.map(entry => {
+    const transformedEntry: { [key: string]: any } = {};
+
+    for (const key in entry) {
+      if (key !== xColumn) {
+        // Ensure numeric values are actual numbers
+        transformedEntry[key.replace(/"/g, '')] = parseFloat(entry[key]) || entry[key];
+      } else {
+        transformedEntry[key] = entry[key];
+      }
+    }
+
+    return transformedEntry;
+  });
+
+  return transformedData;
+};
+
+const generateKeys = (tableData: Props["tabledata"], seriesColumn: string) => {
+  const keysSet = new Set();
+
+  (tableData ?? []).forEach(item => {
+    const seriesValue = item[seriesColumn] || 'Overall';
+    keysSet.add(seriesValue);
+  });
+
+  return Array.from(keysSet);
 };
 
 const transformDataForChart = (tableData: Props["tabledata"], xColumn: string, yColumn: string, seriesColumn: string) => {
@@ -73,6 +124,9 @@ function LineChart(props: Props) {
   const [yColumn, setYColumn] = useState('');
   const [seriesColumn, setSeriesColumn] = useState('None');
   const [chartData, setChartData] = useState<{ id: string; data: { x: string; y: number }[] }[]>([]);
+  const [barData, setBarData] = useState<{ [key: string]: any; }[]>([]);
+  const [seriesKeys, setSeriesKeys] = useState<string[]>([]);
+  const [chartType, setChartType] = useState<'line' | 'bar'>('line');
   const router = useRouter();
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -109,7 +163,11 @@ function LineChart(props: Props) {
 
   useEffect(() => {
     const data = transformDataForChart(props.tabledata, xColumn, yColumn, seriesColumn);
+    const bData = transformDataForBar(props.tabledata, xColumn, yColumn, seriesColumn);
+    const keys = generateKeys(props.tabledata, seriesColumn);
     setChartData(data as { id: string; data: { x: string; y: number }[] }[]);
+    setBarData(bData as { [key: string]: any; }[]);
+    setSeriesKeys(keys as string[]);
   }, [props.tabledata, xColumn, yColumn, seriesColumn]);
 
   const getStringColumnOptions = () => {
@@ -133,6 +191,10 @@ function LineChart(props: Props) {
       <SelectItem key={nanoid()} value={column}>{column}</SelectItem>
     ));
   };
+
+  console.log('**************')
+  console.log(barData)
+  console.log(xColumn)
 
   return (
     <>
@@ -218,15 +280,117 @@ function LineChart(props: Props) {
                                   itemOpacity: 1
                               }
                           }
-                      ]
+                      ],
                   }
               ]}
             />
+            <ResponsiveBar
+              data={barData}
+              keys={seriesKeys}
+              indexBy={xColumn}
+              margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
+              padding={0.3}
+              valueScale={{ type: 'linear' }}
+              indexScale={{ type: 'band', round: true }}
+              colors={{ scheme: 'category10' }}
+              defs={[
+                  {
+                      id: 'dots',
+                      type: 'patternDots',
+                      background: 'inherit',
+                      color: '#38bcb2',
+                      size: 4,
+                      padding: 1,
+                      stagger: true
+                  },
+                  {
+                      id: 'lines',
+                      type: 'patternLines',
+                      background: 'inherit',
+                      color: '#eed312',
+                      rotation: -45,
+                      lineWidth: 6,
+                      spacing: 10
+                  }
+              ]}
+              borderColor={{
+                  from: 'color',
+                  modifiers: [
+                      [
+                          'darker',
+                          1.6
+                      ]
+                  ]
+              }}
+              axisTop={null}
+              axisRight={null}
+              axisBottom={{
+                  tickSize: 5,
+                  tickPadding: 5,
+                  tickRotation: 0,
+                  legendPosition: 'middle',
+                  legendOffset: 32,
+                  truncateTickAt: 0
+              }}
+              axisLeft={{
+                  tickSize: 5,
+                  tickPadding: 5,
+                  tickRotation: 0,
+                  legendPosition: 'middle',
+                  legendOffset: -40,
+                  truncateTickAt: 0
+              }}
+              labelSkipWidth={12}
+              labelSkipHeight={12}
+              labelTextColor={{
+                  from: 'color',
+                  modifiers: [
+                      [
+                          'darker',
+                          1.6
+                      ]
+                  ]
+              }}
+              legends={[
+                  {
+                      dataFrom: 'keys',
+                      anchor: 'bottom-right',
+                      direction: 'column',
+                      justify: false,
+                      translateX: 120,
+                      translateY: 0,
+                      itemsSpacing: 2,
+                      itemWidth: 100,
+                      itemHeight: 20,
+                      itemDirection: 'left-to-right',
+                      itemOpacity: 0.85,
+                      symbolSize: 20,
+                      effects: [
+                          {
+                              on: 'hover',
+                              style: {
+                                  itemOpacity: 1
+                              }
+                          }
+                      ]
+                  }
+              ]}
+          />
           </div>
           <div>
             <div className="flex justify-end mb-4">
               <Button variant="outline" disabled>Download Chart</Button>
             </div>
+              <Label htmlFor="framework">Chart Type</Label>
+              <Select onValueChange={(value) => setChartType(value as 'line' | 'bar')}>
+                <SelectTrigger id="chart-type">
+                  <SelectValue placeholder={null} />
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  <SelectItem key={nanoid()} value={'line'}>{'Line'}</SelectItem>
+                  <SelectItem key={nanoid()} value={'bar'}>{'Bar'}</SelectItem>
+                </SelectContent>
+              </Select>
               <Label htmlFor="framework">x-axis</Label>
               <Select onValueChange={(value) => setXColumn(value)}>
                 <SelectTrigger id="x-axis">

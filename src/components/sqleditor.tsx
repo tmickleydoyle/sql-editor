@@ -14,7 +14,8 @@ import Playground from "./sqleditor_components/playground";
 import DataCatalog from "./sqleditor_components/catalog";
 import DataTable from "./sqleditor_components/table";
 import HiddenFooter from "./sqleditor_components/hidden_footer";
-import LineChart from "./sqleditor_components/linechart";
+import chart from "./sqleditor_components/chart";
+import Chart from "./sqleditor_components/chart";
 
 interface DataItem {
   [key: string]: any | any;
@@ -154,7 +155,7 @@ function SqlEditor() {
               <CardContent>
                 <br />
                 {data && data.length < 10000 && (
-                  <LineChart tabledata={data?.slice(0, 5000) || undefined}/>
+                  <Chart tabledata={data?.slice(0, 5000) || undefined}/>
                 )}
                 {data && data.length >= 10000 && (
                   <div className="flex flex-col gap-4">
