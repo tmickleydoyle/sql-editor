@@ -256,7 +256,7 @@ function LineChart(props: Props) {
                               <div className="container">
                                 <div style={{ display: 'inline-block', height: '13px', width: '13px', backgroundColor: point.serieColor}}></div>
                                 <span className="bold">{' '}{point.serieId}{' '}</span>
-                                <span className="bold">{' -'}{point.data.xFormatted}:{' '}</span>
+                                <span className="bold">{' - '}{point.data.xFormatted}:{' '}</span>
                                 <span className="bold"><b>{point.data.yFormatted}</b></span>
                             </div>
                           </div>
