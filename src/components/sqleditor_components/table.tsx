@@ -13,9 +13,11 @@ type TableDataEntry = {
 function DataTable(props: Props) {
   return (
     <>
-      <div className="flex justify-end mb-4" {...props}>
-        <Button variant="outline" disabled>Download Data</Button>
-      </div>
+      {props.data && (
+        <div className="flex justify-end mb-4" {...props}>
+          <Button variant="outline" disabled>Download Data</Button>
+        </div>
+      )}
       <div className="table-container">
         <Table>
           <TableHeader>
